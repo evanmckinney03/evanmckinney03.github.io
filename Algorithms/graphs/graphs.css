@@ -1,0 +1,39 @@
+#background {
+  fill: beige;
+}
+body {
+  margin: 0;
+}
+
+.node {
+  stroke-width: 1;
+  stroke: black;
+}
+
+.nodeUnselected {
+  fill: grey;
+}
+.nodeSelected {
+  fill: lightBlue;
+}
+
+.line {
+  stroke-width: 1;
+  stroke: black;
+  pointer-events: none;
+}
+
+.weight {
+  stroke-width: 1;
+  stroke: black;
+  fill: lightGrey;
+}
+
+.text {
+  border: none;
+  outline: none;
+  background: none;
+  text-align: center;
+  width: 30px;
+  user-select: none;
+}

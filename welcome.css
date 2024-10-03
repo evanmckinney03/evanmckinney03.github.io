@@ -1,0 +1,51 @@
+body {
+  background: beige;
+  display: flex;
+  align-items: center;
+  height: 100vh;
+}
+
+.main {
+  border: 1px solid;
+  width: 50vw;
+  margin: auto;
+  background: grey;
+}
+
+.image {
+  float: left;
+  margin-right: 5px;
+  margin-left: 10px;
+  margin-top: 10px;
+}
+
+.textbox {
+  background: red;
+  margin-top: 10px;
+  margin-left: 10px;
+  margin-right: 10px;
+}
+
+p {
+  margin: 0px;
+}
+
+.bottom {
+  clear: left;
+  background: yellow;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  border-top: 1px solid;
+}
+
+.option {
+  flex: 1;
+  text-align: center;
+  padding: 5px;
+}
+
+.border-right {
+  border-right: 1px solid;
+}

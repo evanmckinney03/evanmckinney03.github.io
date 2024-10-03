@@ -1,0 +1,96 @@
+#svg {
+  user-select: none;
+  background-color: lightgrey;
+}
+
+.text {
+  pointer-events: none;
+  text-anchor: middle;
+  dominant-baseline: middle;
+  user-select: none;
+}
+
+.text1 {
+  fill: blue;
+}
+
+.text2 {
+  fill: green;
+}
+
+.text3 {
+  fill: red;
+}
+
+.text4 {
+  fill: darkblue;
+}
+
+.text5 {
+  fill: darkred;
+}
+
+.text6 {
+  fill: cyan;
+}
+
+.text7 {
+  fill: black;
+}
+
+.text8 {
+  fill: grey;
+}
+
+.textexclam {
+  fill: white;
+}
+
+.textX {
+  fill: black;
+}
+
+.newSquare {
+  fill: grey;
+}
+
+.blankSquare {
+  fill: lightgrey;
+}
+
+.border {
+  fill: none;
+  stroke: white;
+  stroke-width: 2;
+  pointer-events: none;
+}
+
+.topRect {
+  fill: darkgrey;
+}
+
+.topText {
+  fill: red;
+  dominant-baseline: auto;
+}
+
+.smileyCircle {
+  fill: yellow;
+  stroke: black;
+  stroke-width: 1;
+}
+
+.mouth {
+  fill: none;
+  stroke: black;
+  stroke-width: 1.5;
+  pointer-events: none;
+}
+
+.eye {
+  pointer-events: none;
+  text-anchor: middle;
+  dominant-baseline: middle;
+  user-select: none;
+  font-family: Monaco, Arial, sans-serif;
+}
