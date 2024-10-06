@@ -5,3 +5,27 @@
 body {
   margin: 0;
 }
+
+.top {
+  fill: LightSkyBlue;
+}
+
+.right {
+  fill: DodgerBlue;
+}
+
+.left {
+  fill: DeepSkyBlue;
+}
+
+#floor {
+  stroke: black;
+  stroke-width: 2;
+}
+
+.grid_line {
+  stroke: black;
+  stroke-width: 2;
+  pointer-events: none;
+}
+
