@@ -1,4 +1,4 @@
-const GRID_SIZE = 10;
+const GRID_SIZE = 11;
 const STROKE_OFFSET = 2;
 
 window.onload = init;
@@ -82,8 +82,9 @@ function floorClicked(event) {
   const adjY = floorCoords[3][1] + (y + 1) * SIDE_Y;
   const normX = event.clientX - adjX;
   const normY = adjY - event.clientY;
-  if((x + y) % 2 == 0) {
-    const xVal = (x + y - GRID_SIZE) / 2;
+  if((x + y) % 2 == (GRID_SIZE % 2)) {
+    //down
+    const xVal = Math.floor((x + y - GRID_SIZE) / 2);
     if(normX * (SIDE_Y / SIDE_X * -1) + SIDE_Y > normY) {
       const yVal = x - xVal - 1;
       console.log([xVal, yVal]);
@@ -92,6 +93,7 @@ function floorClicked(event) {
       console.log([xVal, yVal]);
     }
   } else {
+    //up
     const yVal = Math.floor((x - (y - GRID_SIZE)) / 2);
     if(normX * (SIDE_Y / SIDE_X) > normY) {
       const xVal = x - yVal;
