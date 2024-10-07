@@ -39,7 +39,7 @@ function drawFloor(floorCoords, svg) {
   floor.setAttribute('id', 'floor');
   floor.setAttribute('points', floorCoords[0] + ' ' + floorCoords[1] + ' ' + floorCoords[2] + ' ' + floorCoords[3]);
   floor.setAttribute('class', 'top');
-  floor.addEventListener('mousemove', floorMousemove);
+  floor.addEventListener('mouseenter', floorMouseenter, {once: true});
   svg.appendChild(floor);
 }
 
@@ -77,13 +77,15 @@ function drawGridLines(svg) {
 }
 
 //draws a highlighted square at the given coords
-function drawHighlight(coords, svg) {
+function drawHighlight(coords) {
+  const svg = document.getElementById('svg');
   //first check if a highlight square has been drawn
   let highlight = document.getElementById('highlight');
   if(highlight == null) {
     //create the highlight and add it to the svg
     highlight = document.createElementNS('http://www.w3.org/2000/svg', 'polygon');
     highlight.setAttribute('id', 'highlight');
+    highlight.addEventListener('mouseout', leaveHighlight);
     svg.appendChild(highlight);
   }
   let points = coords + ' ' + [coords[0] + SIDE_X, coords[1] + SIDE_Y];
@@ -91,23 +93,32 @@ function drawHighlight(coords, svg) {
   highlight.setAttribute('points', points);
 }
 
-let oldMouseLocation = [0, 0];
-function floorMousemove(event) {
+function floorMouseenter(event) {
   const mouseLocation = convertToGrid(event.clientX, event.clientY);
-  if(mouseLocation[0] != oldMouseLocation[0] || mouseLocation[1] != oldMouseLocation[1]) {
-    oldMouseLocation = mouseLocation;
+  const highlightCoords = floorGridToSVGCoords(mouseLocation);
+  drawHighlight(highlightCoords);
+}
+
+//when leaving a highlight, if it is in the floor still, redraw highlight
+function leaveHighlight(event) {
+  const floor = document.getElementById('floor');
+  if(floor.matches(':hover')) {
+    //cursor is still in floor, so move the highlight to mouse location
+    const mouseLocation = convertToGrid(event.clientX, event.clientY);
     const highlightCoords = floorGridToSVGCoords(mouseLocation);
-    const svg = document.getElementById('svg');
-    drawHighlight(highlightCoords, svg);
+    drawHighlight(highlightCoords);
+  } else {
+    //delete highlight and readd the event listener for when floor is entered again
+    deleteHighlight();
+    floor.addEventListener('mouseenter', floorMouseenter, {once: true});
   }
 }
 
 //delete the highlight
-function deleteHighlight(event) {
+function deleteHighlight() {
   const highlight = document.getElementById('highlight');
   //it should always exist, but just in case
-  //if(highlight) highlight.remove();
-  console.log('out');
+  if(highlight) highlight.remove();
 }
 
 //converts mouse coords to floor grid coords where left is the origin
