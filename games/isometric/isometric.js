@@ -8,6 +8,8 @@ let SIDE_X;
 let SIDE_Y;
 const floorCoords = [];
 
+//used to highlight a certain tile
+
 function init() {
   const svg = document.getElementById('svg');
   const svgWidth = svg.getAttribute('width');
@@ -37,7 +39,7 @@ function drawFloor(floorCoords, svg) {
   floor.setAttribute('id', 'floor');
   floor.setAttribute('points', floorCoords[0] + ' ' + floorCoords[1] + ' ' + floorCoords[2] + ' ' + floorCoords[3]);
   floor.setAttribute('class', 'top');
-  floor.addEventListener('mousedown', floorClicked);
+  floor.addEventListener('mousemove', floorMousemove);
   svg.appendChild(floor);
 }
 
@@ -74,35 +76,78 @@ function drawGridLines(svg) {
   }
 }
 
-//
-function floorClicked(event) {
-  const x = Math.floor((event.clientX - floorCoords[0][0]) / SIDE_X);
-  const y = Math.floor((event.clientY - floorCoords[3][1]) / SIDE_Y);
+//draws a highlighted square at the given coords
+function drawHighlight(coords, svg) {
+  //first check if a highlight square has been drawn
+  let highlight = document.getElementById('highlight');
+  if(highlight == null) {
+    //create the highlight and add it to the svg
+    highlight = document.createElementNS('http://www.w3.org/2000/svg', 'polygon');
+    highlight.setAttribute('id', 'highlight');
+    svg.appendChild(highlight);
+  }
+  let points = coords + ' ' + [coords[0] + SIDE_X, coords[1] + SIDE_Y];
+  points += ' ' + [coords[0] + SIDE_X * 2, coords[1]] + ' ' + [coords[0] + SIDE_X, coords[1] - SIDE_Y];
+  highlight.setAttribute('points', points);
+}
+
+let oldMouseLocation = [0, 0];
+function floorMousemove(event) {
+  const mouseLocation = convertToGrid(event.clientX, event.clientY);
+  if(mouseLocation[0] != oldMouseLocation[0] || mouseLocation[1] != oldMouseLocation[1]) {
+    oldMouseLocation = mouseLocation;
+    const highlightCoords = floorGridToSVGCoords(mouseLocation);
+    const svg = document.getElementById('svg');
+    drawHighlight(highlightCoords, svg);
+  }
+}
+
+//delete the highlight
+function deleteHighlight(event) {
+  const highlight = document.getElementById('highlight');
+  //it should always exist, but just in case
+  //if(highlight) highlight.remove();
+  console.log('out');
+}
+
+//converts mouse coords to floor grid coords where left is the origin
+function convertToGrid(clientX, clientY) {
+  const x = Math.floor((clientX - floorCoords[0][0]) / SIDE_X);
+  const y = Math.floor((clientY - floorCoords[3][1]) / SIDE_Y);
   const adjX = floorCoords[0][0] + x * SIDE_X;
   const adjY = floorCoords[3][1] + (y + 1) * SIDE_Y;
-  const normX = event.clientX - adjX;
-  const normY = adjY - event.clientY;
+  const normX = clientX - adjX;
+  const normY = adjY - clientY;
   if((x + y) % 2 == (GRID_SIZE % 2)) {
     //down
     const xVal = Math.floor((x + y - GRID_SIZE) / 2);
     if(normX * (SIDE_Y / SIDE_X * -1) + SIDE_Y > normY) {
       const yVal = x - xVal - 1;
-      console.log([xVal, yVal]);
+      //sometimes clicking the border results in out of bounds so just ensure
+      //values are within 0 to GRID_SIZE - 1
+      return [Math.min(Math.max(xVal, 0), GRID_SIZE - 1), Math.min(Math.max(yVal, 0), GRID_SIZE - 1)];
     } else {
       const yVal = x - xVal;
-      console.log([xVal, yVal]);
+      return [Math.min(Math.max(xVal, 0), GRID_SIZE - 1), Math.min(Math.max(yVal, 0), GRID_SIZE - 1)];
     }
   } else {
     //up
     const yVal = Math.floor((x - (y - GRID_SIZE)) / 2);
     if(normX * (SIDE_Y / SIDE_X) > normY) {
       const xVal = x - yVal;
-      console.log([xVal, yVal]);
+      return [Math.min(Math.max(xVal, 0), GRID_SIZE - 1), Math.min(Math.max(yVal, 0), GRID_SIZE - 1)];
     } else {
       const xVal = x - yVal - 1;
-      console.log([xVal, yVal]);
+      return [Math.min(Math.max(xVal, 0), GRID_SIZE - 1), Math.min(Math.max(yVal, 0), GRID_SIZE - 1)];
     }
   }
+}
+
+//converts a floor grid coordinate to the location of the left most point of the rhombus
+function floorGridToSVGCoords(gridCoords) {
+  const x = floorCoords[0][0] + SIDE_X * (gridCoords[0] + gridCoords[1]);
+  const y = floorCoords[1][1] - SIDE_Y * (GRID_SIZE - gridCoords[0] + gridCoords[1]);
+  return [x ,y];
 }
 
 //returns the distance between two coordinate points
