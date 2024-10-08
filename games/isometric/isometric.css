@@ -8,19 +8,26 @@ body {
 
 .top {
   fill: LightSkyBlue;
+  stroke: black;
+  stroke-width: 2;
 }
 
 .right {
   fill: DodgerBlue;
+  stroke: black;
+  stroke-width: 2;
 }
 
 .left {
   fill: DeepSkyBlue;
+  stroke: black;
+  stroke-width: 2;
 }
 
 #floor {
   stroke: black;
   stroke-width: 2;
+  fill: AliceBlue;
 }
 
 .grid_line {

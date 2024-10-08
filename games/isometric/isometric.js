@@ -4,6 +4,7 @@ const STROKE_OFFSET = 2;
 window.onload = init;
 
 //these variables are set in init because it is determined by svg size
+let SIDE_LENGTH;
 let SIDE_X;
 let SIDE_Y;
 const floorCoords = [];
@@ -25,7 +26,7 @@ function init() {
   drawFloor(floorCoords, svg);
 
   //use floorCoords and GRID_SIZE to determine the length of the sides
-  const SIDE_LENGTH = distance(floorCoords[0], floorCoords[1]) / GRID_SIZE;
+  SIDE_LENGTH = distance(floorCoords[0], floorCoords[1]) / GRID_SIZE;
   //convert to components for ease later
   SIDE_X = SIDE_LENGTH * Math.sqrt(3) / 2;
   SIDE_Y = SIDE_LENGTH / 2;
@@ -38,7 +39,6 @@ function drawFloor(floorCoords, svg) {
   const floor = document.createElementNS('http://www.w3.org/2000/svg', 'polygon');
   floor.setAttribute('id', 'floor');
   floor.setAttribute('points', floorCoords[0] + ' ' + floorCoords[1] + ' ' + floorCoords[2] + ' ' + floorCoords[3]);
-  floor.setAttribute('class', 'top');
   floor.addEventListener('mouseenter', floorMouseenter, {once: true});
   svg.appendChild(floor);
 }
@@ -86,11 +86,40 @@ function drawHighlight(coords) {
     highlight = document.createElementNS('http://www.w3.org/2000/svg', 'polygon');
     highlight.setAttribute('id', 'highlight');
     highlight.addEventListener('mouseout', leaveHighlight);
+    highlight.addEventListener('click', highlightClicked);
     svg.appendChild(highlight);
   }
   let points = coords + ' ' + [coords[0] + SIDE_X, coords[1] + SIDE_Y];
   points += ' ' + [coords[0] + SIDE_X * 2, coords[1]] + ' ' + [coords[0] + SIDE_X, coords[1] - SIDE_Y];
   highlight.setAttribute('points', points);
+}
+
+//draws a cube starting at the bottom left
+function drawCube(coords) {
+  const svg = document.getElementById('svg');
+  const left = document.createElementNS('http://www.w3.org/2000/svg', 'polygon');
+  let leftPoints = coords + ' ' + [coords[0] + SIDE_X, coords[1] + SIDE_Y] + ' ' + 
+		[coords[0] + SIDE_X, coords[1] + SIDE_Y - SIDE_LENGTH] + ' ' + [coords[0], coords[1] - SIDE_LENGTH];
+  left.setAttribute('id', 'left');
+  left.setAttribute('class', 'left');
+  left.setAttribute('points', leftPoints);
+  svg.appendChild(left);
+  const right = document.createElementNS('http://www.w3.org/2000/svg', 'polygon');
+  let rightPoints = [coords[0] + SIDE_X * 2, coords[1]] + ' ' + [coords[0] + SIDE_X, coords[1] + SIDE_Y] + ' ' 
+		+ [coords[0] + SIDE_X, coords[1] + SIDE_Y - SIDE_LENGTH] + ' ' 
+                + [coords[0] + SIDE_X * 2, coords[1] - SIDE_LENGTH];
+  right.setAttribute('id', 'right');
+  right.setAttribute('class', 'right');
+  right.setAttribute('points', rightPoints);
+  svg.appendChild(right);
+  const top = document.createElementNS('http://www.w3.org/2000/svg', 'polygon');
+  let topPoints = [coords[0], coords[1] - SIDE_LENGTH] + ' ' + [coords[0] + SIDE_X, coords[1] - SIDE_LENGTH - SIDE_Y]
+	+ ' ' + [coords[0] + SIDE_X * 2, coords[1] - SIDE_LENGTH] + ' ' 
+	+ [coords[0] + SIDE_X, coords[1] - SIDE_LENGTH + SIDE_Y];
+  top.setAttribute('id', 'top');
+  top.setAttribute('class', 'top');
+  top.setAttribute('points', topPoints);
+  svg.appendChild(top);
 }
 
 function floorMouseenter(event) {
@@ -112,6 +141,12 @@ function leaveHighlight(event) {
     deleteHighlight();
     floor.addEventListener('mouseenter', floorMouseenter, {once: true});
   }
+}
+
+//what to do when the highlight is clicked
+function highlightClicked(event) {
+  const coords = this.getAttribute('points').split(' ')[0].split(',');
+  drawCube([parseFloat(coords[0]), parseFloat(coords[1])]);
 }
 
 //delete the highlight
