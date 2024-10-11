@@ -11,17 +11,16 @@ const TEXT_IN = 2;
 const MOUTH_X_DISTANCE = TOP_HEIGHT / 4 + 1;
 const MOUTH_Y_DISTANCE = TOP_HEIGHT / 2 + 6;
 
-//used for mousedown event to calculate if clicking within the grid
-const MARGIN = 8;
-
 let timer;
 
 window.onload = init;
 
 function init() {
-  let easyButton = document.getElementById('easy');
-  let intermediateButton = document.getElementById('intermediate');
-  let expertButton = document.getElementById('expert');
+  const easyButton = document.getElementById('easy');
+  const intermediateButton = document.getElementById('intermediate');
+  const expertButton = document.getElementById('expert');
+  const helpButton = document.getElementById('help');
+  const overlay = document.getElementById('overlay');
   let board_size = [9, 9];
   let num_mines = 10;
 
@@ -41,6 +40,12 @@ function init() {
     board_size = [30, 16];
     num_mines = 99;
     gameInit(board_size, num_mines);
+  });
+  helpButton.addEventListener('click', () => {
+    overlay.style.display = "block";
+  })
+  overlay.addEventListener('click', () => {
+    overlay.style.display = "none";
   });
 
   onmousedown = (event) => {

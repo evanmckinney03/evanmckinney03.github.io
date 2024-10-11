@@ -2,15 +2,23 @@
 <html>
 <head>
 <link rel="stylesheet" href="minesweeper.css" type="text/css" />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0&icon_names=help" />
 </head>
 <body>
+  <div id="overlay">
+    <p>Information about minesweeper</p>
+  </div>
   <div id="container">
   <svg id="svg" width="1200" height="800" xmlns="http://www.w3.org/2000/svg"></svg>
   <script src="minesweeper.js"></script>
-  <br>
+  <div id="bottom_row">
+  <div id="buttons">
   <button id="easy">Easy</button>
   <button id="intermediate">Intermediate</button>
   <button id="expert">Expert</button>
+  </div>
+  <span id= "help" class="material-symbols-outlined">help</span>
+  </div>
   </div>
 </body>
 </html>
