@@ -39,7 +39,7 @@ function drawFloor(floorCoords, svg) {
   const floor = document.createElementNS('http://www.w3.org/2000/svg', 'polygon');
   floor.setAttribute('id', 'floor');
   floor.setAttribute('points', floorCoords[0] + ' ' + floorCoords[1] + ' ' + floorCoords[2] + ' ' + floorCoords[3]);
-  floor.addEventListener('mouseenter', floorMouseenter, {once: true});
+  floor.addEventListener('mousemove', floorMousemove);
   svg.appendChild(floor);
 }
 
@@ -76,8 +76,8 @@ function drawGridLines(svg) {
   }
 }
 
-//draws a highlighted square at the given coords
-function drawHighlight(coords) {
+//draws a highlighted square at the given coords and height
+function drawHighlight(coords, zlevel) {
   const svg = document.getElementById('svg');
   //first check if a highlight square has been drawn
   let highlight = document.getElementById('highlight');
@@ -122,10 +122,11 @@ function drawCube(coords) {
   svg.appendChild(top);
 }
 
-function floorMouseenter(event) {
+function floorMousemove(event) {
   const mouseLocation = convertToGrid(event.clientX, event.clientY);
   const highlightCoords = floorGridToSVGCoords(mouseLocation);
-  drawHighlight(highlightCoords);
+  //z-level -1 because it is on the floor
+  drawHighlight(highlightCoords, -1);
 }
 
 //when leaving a highlight, if it is in the floor still, redraw highlight
@@ -133,13 +134,9 @@ function leaveHighlight(event) {
   const floor = document.getElementById('floor');
   if(floor.matches(':hover')) {
     //cursor is still in floor, so move the highlight to mouse location
-    const mouseLocation = convertToGrid(event.clientX, event.clientY);
-    const highlightCoords = floorGridToSVGCoords(mouseLocation);
-    drawHighlight(highlightCoords);
   } else {
     //delete highlight and readd the event listener for when floor is entered again
     deleteHighlight();
-    floor.addEventListener('mouseenter', floorMouseenter, {once: true});
   }
 }
 
