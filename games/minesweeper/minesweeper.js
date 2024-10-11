@@ -1,5 +1,6 @@
 const SQ_WIDTH = 35;
 const BORDER_WIDTH = 2;
+//distance between left side of svg and grid
 const START_OFFSET_X = 10;
 //height of the top bar
 const TOP_HEIGHT = 40;
@@ -43,9 +44,11 @@ function init() {
   });
 
   onmousedown = (event) => {
-    let grid_border = [[START_OFFSET_X, START_OFFSET_Y], 
-	    [START_OFFSET_X + board_size[0] * SQ_WIDTH, START_OFFSET_Y + board_size[1] * SQ_WIDTH]];
-    let click = [event.pageX - MARGIN, event.pageY - MARGIN];
+    let svgBounds = document.getElementById('svg').getBoundingClientRect();
+    let grid_border = [[svgBounds.left + START_OFFSET_X, svgBounds.top + START_OFFSET_Y], 
+	    [svgBounds.left + START_OFFSET_X + board_size[0] * SQ_WIDTH, 
+		    svgBounds.top + START_OFFSET_Y + board_size[1] * SQ_WIDTH]];
+    let click = [event.pageX, event.pageY];
     //checks to see if click was within grid
     if(click[0] >= grid_border[0][0] && click[0] < grid_border[1][0] 
 	    && click[1] >= grid_border[0][1] && click[1] < grid_border[1][1]) {
