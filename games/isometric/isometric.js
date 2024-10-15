@@ -138,6 +138,20 @@ function drawCube(coords, position) {
   top.setAttribute('id', position + ',top');
   top.setAttribute('class', 'top');
   top.setAttribute('points', topPoints);
+  
+  //add event listeners to delete cube when double clicked
+  left.addEventListener('click', function() {
+    const position = this.getAttribute('id').split(',');
+    deleteCube([position[0], position[1], position[2]]);
+  });
+  right.addEventListener('click', function() {
+    const position = this.getAttribute('id').split(',');
+    deleteCube([position[0], position[1], position[2]]);
+  });
+  top.addEventListener('click', function() {
+    const position = this.getAttribute('id').split(',');
+    deleteCube([position[0], position[1], position[2]]);
+  });
 
   //need to place in correct spot in svg
   //each z layer should be drawn in order highest to lowest
@@ -195,6 +209,14 @@ function deleteHighlight() {
   const highlight = document.getElementById('highlight');
   //it should always exist, but just in case
   if(highlight) highlight.remove();
+}
+
+//delete a cube at the given position
+function deleteCube(position) {
+  const svg = document.getElementById('svg');
+  svg.removeChild(document.getElementById(position + ',left'));
+  svg.removeChild(document.getElementById(position + ',right'));
+  svg.removeChild(document.getElementById(position + ',top'));
 }
 
 //converts mouse coords to floor grid coords where left is the origin
