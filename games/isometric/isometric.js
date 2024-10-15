@@ -8,9 +8,8 @@ let SIDE_LENGTH;
 let SIDE_X;
 let SIDE_Y;
 const floorCoords = [];
-const grid = [];
-addGridLayer(grid);
-console.log(grid);
+//const grid = [];
+//addGridLayer(grid);
 
 //used to highlight a certain tile
 
@@ -153,6 +152,14 @@ function drawCube(coords, position) {
     deleteCube([position[0], position[1], position[2]]);
   });
 
+  //add event listener for the top to draw the highlight
+  top.addEventListener('mouseenter', function() {
+    const position = this.getAttribute('id').split(',');
+    position.pop();
+    const highlightCoords = positionToSVGCoords([parseInt(position[0]), parseInt(position[1]), parseInt(position[2])]);
+    drawHighlight(highlightCoords, position); 
+  });
+
   //need to place in correct spot in svg
   //each z layer should be drawn in order highest to lowest
   //higher x and lower y means closer to viewer
@@ -165,9 +172,7 @@ function drawCube(coords, position) {
   for(let i = 0; i < cubes.length; i++) {
     const curCubePos = cubes[i].getAttribute('id').split(',');
     const cur = [parseInt(curCubePos[0]), parseInt(curCubePos[1]), parseInt(curCubePos[2])];
-    console.log(cur);
-    console.log(pos)
-    if((cur[0] == pos[0] && cur[1] - cur[2] >= pos[1] - pos[2]) || cur[0] < pos[0]) {
+    if(cur[0] > pos[0] || (cur[0] == pos[0] && cur[1] - cur[2] >= pos[1] - pos[2])) {
       polygon = cubes[i];
       break;
     }
@@ -179,7 +184,7 @@ function drawCube(coords, position) {
 
 function floorMousemove(event) {
   const mouseLocation = convertToGrid(event.pageX, event.pageY);
-  const highlightCoords = floorGridToSVGCoords(mouseLocation);
+  const highlightCoords = positionToSVGCoords([-1, mouseLocation[0], mouseLocation[1]]);
   //z-level -1 because it is on the floor
   drawHighlight(highlightCoords, [-1, mouseLocation[0], mouseLocation[1]]);
 }
@@ -252,10 +257,11 @@ function convertToGrid(clientX, clientY) {
   }
 }
 
-//converts a floor grid coordinate to the location of the left most point of the rhombus
-function floorGridToSVGCoords(gridCoords) {
-  const x = floorCoords[0][0] + SIDE_X * (gridCoords[0] + gridCoords[1]);
-  const y = floorCoords[1][1] - SIDE_Y * (GRID_SIZE - gridCoords[0] + gridCoords[1]);
+//converts a position on the grid to SVG coords
+//assumes that a z level of -1 is the floor, 0 is the top of the first cube layer
+function positionToSVGCoords(pos) {
+  const x = floorCoords[0][0] + SIDE_X * (pos[1] + pos[2]);
+  const y = floorCoords[1][1] - SIDE_Y * (GRID_SIZE - pos[1] + pos[2]) - (SIDE_LENGTH * (pos[0] + 1));
   return [x, y];
 }
 
