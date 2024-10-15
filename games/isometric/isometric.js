@@ -90,6 +90,11 @@ function drawHighlight(coords, position) {
     highlight.setAttribute('id', 'highlight');
     highlight.addEventListener('mouseout', leaveHighlight);
     highlight.addEventListener('click', highlightClicked);
+    highlight.addEventListener('contextmenu', function(e) {
+      e.preventDefault();
+      highlightRightClicked(this.getAttribute('data-zxy'));
+      return false;
+    });
   } else {
     svg.removeChild(highlight);
   }
@@ -100,11 +105,11 @@ function drawHighlight(coords, position) {
 
   //must insert the highlight in the correct place in the svg
   const cubes = Array.from(document.getElementsByClassName('left'));
-  //find the first element that has a z of highlight z+1 and insert it before
+  //find the first element that has a z greater than highlight's z and insert it before
   //binary search would be more efficient but too lazy to code
   let polygon = null;
   for(let i = 0; i < cubes.length; i++) {
-    if(parseInt(cubes[i].getAttribute('id').split(',')[0]) == (parseInt(position[0]) + 1)) {
+    if(parseInt(cubes[i].getAttribute('id').split(',')[0]) > parseInt(position[0])) {
       polygon = cubes[i];
       break;
     }
@@ -180,6 +185,9 @@ function drawCube(coords, position) {
   svg.insertBefore(left, polygon);
   svg.insertBefore(right, polygon);
   svg.insertBefore(top, polygon);
+
+  //delete the highlight because it should be no longer visible and covered by the cube
+  deleteHighlight();
 }
 
 function floorMousemove(event) {
@@ -207,6 +215,15 @@ function highlightClicked(event) {
   //the highlight will always be the layer below the cube to draw, so add one to its z
   position[0]++;
   drawCube([parseFloat(coords[0]), parseFloat(coords[1])], position);
+}
+
+//delete the cube when the highlight is clicked
+function highlightRightClicked(position){
+  //if highlight is clicked when it is on the floor, do nothing
+  if(parseInt(position.split(',')[0]) != -1) {
+    deleteCube(position);
+    deleteHighlight();
+  }
 }
 
 //delete the highlight
