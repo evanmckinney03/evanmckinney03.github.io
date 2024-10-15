@@ -8,6 +8,9 @@ let SIDE_LENGTH;
 let SIDE_X;
 let SIDE_Y;
 const floorCoords = [];
+const grid = [];
+addGridLayer(grid);
+console.log(grid);
 
 //used to highlight a certain tile
 
@@ -32,6 +35,7 @@ function init() {
   SIDE_Y = SIDE_LENGTH / 2;
 
   drawGridLines(svg);
+
 }
 
 //draws the floor based on the given floorCoords
@@ -77,7 +81,7 @@ function drawGridLines(svg) {
 }
 
 //draws a highlighted square at the given coords and height
-function drawHighlight(coords, zlevel) {
+function drawHighlight(coords, position) {
   const svg = document.getElementById('svg');
   //first check if a highlight square has been drawn
   let highlight = document.getElementById('highlight');
@@ -87,20 +91,36 @@ function drawHighlight(coords, zlevel) {
     highlight.setAttribute('id', 'highlight');
     highlight.addEventListener('mouseout', leaveHighlight);
     highlight.addEventListener('click', highlightClicked);
-    svg.appendChild(highlight);
+  } else {
+    svg.removeChild(highlight);
   }
+  highlight.setAttribute('data-zxy', position);
   let points = coords + ' ' + [coords[0] + SIDE_X, coords[1] + SIDE_Y];
   points += ' ' + [coords[0] + SIDE_X * 2, coords[1]] + ' ' + [coords[0] + SIDE_X, coords[1] - SIDE_Y];
   highlight.setAttribute('points', points);
+
+  //must insert the highlight in the correct place in the svg
+  const cubes = Array.from(document.getElementsByClassName('left'));
+  //find the first element that has a z of highlight z +1 and insert it before 
+  let polygon = null;
+  for(let i = 0; i < cubes.length; i++) {
+    if(parseInt(cubes[i].getAttribute('id').split(',')[0]) == (parseInt(position[0]) + 1)) {
+      polygon = cubes[i];
+      break;
+    }
+  }
+  svg.insertBefore(highlight, polygon);
 }
 
 //draws a cube starting at the bottom left
-function drawCube(coords) {
+//coords: where the cube is drawn in SVG
+//position: position in the grid
+function drawCube(coords, position) {
   const svg = document.getElementById('svg');
   const left = document.createElementNS('http://www.w3.org/2000/svg', 'polygon');
   let leftPoints = coords + ' ' + [coords[0] + SIDE_X, coords[1] + SIDE_Y] + ' ' + 
 		[coords[0] + SIDE_X, coords[1] + SIDE_Y - SIDE_LENGTH] + ' ' + [coords[0], coords[1] - SIDE_LENGTH];
-  left.setAttribute('id', 'left');
+  left.setAttribute('id', position + ',left');
   left.setAttribute('class', 'left');
   left.setAttribute('points', leftPoints);
   svg.appendChild(left);
@@ -108,7 +128,7 @@ function drawCube(coords) {
   let rightPoints = [coords[0] + SIDE_X * 2, coords[1]] + ' ' + [coords[0] + SIDE_X, coords[1] + SIDE_Y] + ' ' 
 		+ [coords[0] + SIDE_X, coords[1] + SIDE_Y - SIDE_LENGTH] + ' ' 
                 + [coords[0] + SIDE_X * 2, coords[1] - SIDE_LENGTH];
-  right.setAttribute('id', 'right');
+  right.setAttribute('id', position + ',right');
   right.setAttribute('class', 'right');
   right.setAttribute('points', rightPoints);
   svg.appendChild(right);
@@ -116,17 +136,17 @@ function drawCube(coords) {
   let topPoints = [coords[0], coords[1] - SIDE_LENGTH] + ' ' + [coords[0] + SIDE_X, coords[1] - SIDE_LENGTH - SIDE_Y]
 	+ ' ' + [coords[0] + SIDE_X * 2, coords[1] - SIDE_LENGTH] + ' ' 
 	+ [coords[0] + SIDE_X, coords[1] - SIDE_LENGTH + SIDE_Y];
-  top.setAttribute('id', 'top');
+  top.setAttribute('id', position + ',top');
   top.setAttribute('class', 'top');
   top.setAttribute('points', topPoints);
   svg.appendChild(top);
 }
 
 function floorMousemove(event) {
-  const mouseLocation = convertToGrid(event.clientX, event.clientY);
+  const mouseLocation = convertToGrid(event.pageX, event.pageY);
   const highlightCoords = floorGridToSVGCoords(mouseLocation);
   //z-level -1 because it is on the floor
-  drawHighlight(highlightCoords, -1);
+  drawHighlight(highlightCoords, [-1, mouseLocation[0], mouseLocation[1]]);
 }
 
 //when leaving a highlight, if it is in the floor still, redraw highlight
@@ -140,10 +160,13 @@ function leaveHighlight(event) {
   }
 }
 
-//what to do when the highlight is clicked
+//when highlight is clicked, must draw a cube, update the grid
 function highlightClicked(event) {
   const coords = this.getAttribute('points').split(' ')[0].split(',');
-  drawCube([parseFloat(coords[0]), parseFloat(coords[1])]);
+  const position = this.getAttribute('data-zxy').split(',');
+  //the highlight will always be the layer below the cube to draw, so add one to its z
+  position[0]++;
+  drawCube([parseFloat(coords[0]), parseFloat(coords[1])], position);
 }
 
 //delete the highlight
@@ -190,10 +213,21 @@ function convertToGrid(clientX, clientY) {
 function floorGridToSVGCoords(gridCoords) {
   const x = floorCoords[0][0] + SIDE_X * (gridCoords[0] + gridCoords[1]);
   const y = floorCoords[1][1] - SIDE_Y * (GRID_SIZE - gridCoords[0] + gridCoords[1]);
-  return [x ,y];
+  return [x, y];
 }
 
 //returns the distance between two coordinate points
 function distance(a, b) {
   return Math.sqrt((a[0] - b[0]) * (a[0] - b[0]) + (a[1] - b[1]) * (a[1] - b[1]));
+}
+
+//adds a layer to the 
+function addGridLayer(grid) {
+  for(let i = 0; i < GRID_SIZE; i++) {
+    const row = [];
+    for(let j = 0; j < GRID_SIZE; j++) {
+      row.push(false);
+    }
+    grid.push(row);
+  }
 }
