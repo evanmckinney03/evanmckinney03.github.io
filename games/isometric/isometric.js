@@ -101,7 +101,8 @@ function drawHighlight(coords, position) {
 
   //must insert the highlight in the correct place in the svg
   const cubes = Array.from(document.getElementsByClassName('left'));
-  //find the first element that has a z of highlight z +1 and insert it before 
+  //find the first element that has a z of highlight z+1 and insert it before
+  //binary search would be more efficient but too lazy to code
   let polygon = null;
   for(let i = 0; i < cubes.length; i++) {
     if(parseInt(cubes[i].getAttribute('id').split(',')[0]) == (parseInt(position[0]) + 1)) {
@@ -123,7 +124,6 @@ function drawCube(coords, position) {
   left.setAttribute('id', position + ',left');
   left.setAttribute('class', 'left');
   left.setAttribute('points', leftPoints);
-  svg.appendChild(left);
   const right = document.createElementNS('http://www.w3.org/2000/svg', 'polygon');
   let rightPoints = [coords[0] + SIDE_X * 2, coords[1]] + ' ' + [coords[0] + SIDE_X, coords[1] + SIDE_Y] + ' ' 
 		+ [coords[0] + SIDE_X, coords[1] + SIDE_Y - SIDE_LENGTH] + ' ' 
@@ -131,7 +131,6 @@ function drawCube(coords, position) {
   right.setAttribute('id', position + ',right');
   right.setAttribute('class', 'right');
   right.setAttribute('points', rightPoints);
-  svg.appendChild(right);
   const top = document.createElementNS('http://www.w3.org/2000/svg', 'polygon');
   let topPoints = [coords[0], coords[1] - SIDE_LENGTH] + ' ' + [coords[0] + SIDE_X, coords[1] - SIDE_LENGTH - SIDE_Y]
 	+ ' ' + [coords[0] + SIDE_X * 2, coords[1] - SIDE_LENGTH] + ' ' 
@@ -139,7 +138,29 @@ function drawCube(coords, position) {
   top.setAttribute('id', position + ',top');
   top.setAttribute('class', 'top');
   top.setAttribute('points', topPoints);
-  svg.appendChild(top);
+
+  //need to place in correct spot in svg
+  //each z layer should be drawn in order highest to lowest
+  //higher x and lower y means closer to viewer
+  //which means x-y gives an ordering for cubes per z level
+  //basically find the first cube on same z level with x-y greater or equal than new cube and insert it before
+  //doing linear search for simplicity, binary would be faster
+  const cubes = Array.from(document.getElementsByClassName('left'));
+  let polygon = null;
+  const pos = [parseInt(position[0]), parseInt(position[1]), parseInt(position[2])];
+  for(let i = 0; i < cubes.length; i++) {
+    const curCubePos = cubes[i].getAttribute('id').split(',');
+    const cur = [parseInt(curCubePos[0]), parseInt(curCubePos[1]), parseInt(curCubePos[2])];
+    console.log(cur);
+    console.log(pos)
+    if((cur[0] == pos[0] && cur[1] - cur[2] >= pos[1] - pos[2]) || cur[0] < pos[0]) {
+      polygon = cubes[i];
+      break;
+    }
+  }
+  svg.insertBefore(left, polygon);
+  svg.insertBefore(right, polygon);
+  svg.insertBefore(top, polygon);
 }
 
 function floorMousemove(event) {
