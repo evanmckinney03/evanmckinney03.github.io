@@ -110,8 +110,8 @@ function drawHighlight(coords, position, orientation) {
 		[coords[0] + SIDE_X, coords[1] + SIDE_Y + SIDE_LENGTH] + ' ' + [coords[0], coords[1] + SIDE_LENGTH];
   } else {
     points = [coords[0] + SIDE_X * 2, coords[1]] + ' ' + [coords[0] + SIDE_X, coords[1] + SIDE_Y] + ' ' 
-		+ [coords[0] + SIDE_X, coords[1] + SIDE_Y - SIDE_LENGTH] + ' ' 
-                + [coords[0] + SIDE_X * 2, coords[1] - SIDE_LENGTH];
+		+ [coords[0] + SIDE_X, coords[1] + SIDE_Y + SIDE_LENGTH] + ' ' 
+                + [coords[0] + SIDE_X * 2, coords[1] + SIDE_LENGTH];
   }
   highlight.setAttribute('points', points);
 
@@ -155,16 +155,6 @@ function drawCube(position) {
   top.setAttribute('id', position + ',top');
   top.setAttribute('class', 'top');
   top.setAttribute('points', topPoints);
-  
-  //add event listeners to delete cube when double clicked
-  left.addEventListener('click', function() {
-    const position = this.getAttribute('id').split(',');
-    deleteCube([position[0], position[1], position[2]]);
-  });
-  right.addEventListener('click', function() {
-    const position = this.getAttribute('id').split(',');
-    deleteCube([position[0], position[1], position[2]]);
-  });
 
   //add event listener to draw the highlight
   left.addEventListener('mouseenter', function() {
@@ -172,6 +162,12 @@ function drawCube(position) {
     position.pop();
     const highlightCoords = positionToSVGCoords(position);
     drawHighlight(highlightCoords, position, 'left'); 
+  });
+  right.addEventListener('mouseenter', function() {
+    const position = this.getAttribute('id').split(',');
+    position.pop();
+    const highlightCoords = positionToSVGCoords(position);
+    drawHighlight(highlightCoords, position, 'right'); 
   });
   top.addEventListener('mouseenter', function() {
     const position = this.getAttribute('id').split(',');
