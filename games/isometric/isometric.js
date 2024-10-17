@@ -8,7 +8,6 @@ let SIDE_LENGTH;
 let SIDE_X;
 let SIDE_Y;
 const floorCoords = [];
-const grid = [];
 
 //used to highlight a certain tile
 
@@ -115,18 +114,6 @@ function drawHighlight(position, orientation) {
   }
   highlight.setAttribute('points', points);
   //must insert the highlight in the correct place in the svg
-  /*
-  const cubes = Array.from(document.getElementsByClassName('left'));
-  //find the first element that has a z greater than highlight's z and insert it before
-  //binary search would be more efficient but too lazy to code
-  let polygon = null;
-  for(let i = 0; i < cubes.length; i++) {
-    if(parseInt(cubes[i].getAttribute('id').split(',')[0]) > parseInt(position[0])) {
-      polygon = cubes[i];
-      break;
-    }
-  }
-  */
   const polygon = document.getElementById(position + ',' + orientation);
   if(polygon == null) {
     //hovering over floor
@@ -203,11 +190,6 @@ function drawCube(position) {
   svg.insertBefore(right, polygon);
   svg.insertBefore(top, polygon);
   
-  //add to grid representation
-  while(grid.length - 1 < pos[0]) {
-    addGridLayer(grid);
-  }
-  console.log(grid);
 }
 
 function floorMousemove(event) {
@@ -239,9 +221,12 @@ function highlightClicked(event) {
   } else {
     position[1]++;
   }
-  drawCube(position);
-  //drawing the cube will obscure the highlight, so delete it
-  deleteHighlight();
+  //make sure within the grid footprint
+  if(position[2] >= 0 && position[1] < GRID_SIZE) {
+    drawCube(position);
+    //drawing the cube will obscure the highlight, so delete it
+    deleteHighlight();
+  }
 }
 
 //delete the cube when the highlight is clicked
@@ -315,15 +300,3 @@ function distance(a, b) {
   return Math.sqrt((a[0] - b[0]) * (a[0] - b[0]) + (a[1] - b[1]) * (a[1] - b[1]));
 }
 
-//adds a layer to the 
-function addGridLayer(grid) {
-  const layer = [];
-  for(let i = 0; i < GRID_SIZE; i++) {
-    const row = [];
-    for(let j = 0; j < GRID_SIZE; j++) {
-      row.push(false);
-    }
-    layer.push(row);
-  }
-  grid.push(layer);
-}
