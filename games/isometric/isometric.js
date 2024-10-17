@@ -9,8 +9,6 @@ let SIDE_X;
 let SIDE_Y;
 const floorCoords = [];
 
-//used to highlight a certain tile
-
 function init() {
   const svg = document.getElementById('svg');
   const svgWidth = svg.getAttribute('width');
@@ -32,7 +30,15 @@ function init() {
   SIDE_Y = SIDE_LENGTH / 2;
 
   drawGridLines(svg);
-
+  
+  //add event listeners for left and right arrow to rotate
+  document.addEventListener('keydown', function(e) {
+    if(e.key == 'ArrowLeft') {
+      rotateCounterClockwise();
+    } else if(e.key == 'ArrowRight') {
+      rotateClockwise();
+    }
+  });
 }
 
 //draws the floor based on the given floorCoords
@@ -189,7 +195,6 @@ function drawCube(position) {
   svg.insertBefore(left, polygon);
   svg.insertBefore(right, polygon);
   svg.insertBefore(top, polygon);
-  
 }
 
 function floorMousemove(event) {
@@ -300,3 +305,40 @@ function distance(a, b) {
   return Math.sqrt((a[0] - b[0]) * (a[0] - b[0]) + (a[1] - b[1]) * (a[1] - b[1]));
 }
 
+function rotateClockwise() {
+  deleteHighlight();
+  //get list of all the cubes
+  const cubes = Array.from(document.getElementsByClassName('left'));
+  //rotate the cubes, delete old cube and draw new cube
+  const newCubes = [];
+  for(let i = 0; i < cubes.length; i++) {
+    const pos = cubes[i].getAttribute('id').split(',');
+    pos[0] = parseInt(pos[0]);
+    pos[1] = parseInt(pos[1]);
+    pos[2] = parseInt(pos[2]);
+    pos.pop();
+    const x = pos[2];
+    const y = GRID_SIZE - 1 - pos[1];
+    deleteCube(pos);
+    drawCube([pos[0], x, y]);
+  }
+}
+
+function rotateCounterClockwise() {
+  deleteHighlight();
+  //get list of all the cubes
+  const cubes = Array.from(document.getElementsByClassName('left'));
+  //rotate the cubes, delete old cube and draw new cube
+  const newCubes = [];
+  for(let i = 0; i < cubes.length; i++) {
+    const pos = cubes[i].getAttribute('id').split(',');
+    pos[0] = parseInt(pos[0]);
+    pos[1] = parseInt(pos[1]);
+    pos[2] = parseInt(pos[2]);
+    pos.pop();
+    const x = GRID_SIZE - 1 - pos[2];
+    const y = pos[1];
+    deleteCube(pos);
+    drawCube([pos[0], x, y]);
+  }
+}
