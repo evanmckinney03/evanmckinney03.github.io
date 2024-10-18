@@ -37,7 +37,9 @@ body {
 }
 
 #highlight {
-  fill: red;
+  fill: gold;
+  opacity: .5;
+  pointer-events: visible;
   stroke: black;
   stroke-width: 2;
 }
