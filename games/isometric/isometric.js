@@ -11,11 +11,13 @@ const floorCoords = [];
 
 function init() {
   const svg = document.getElementById('svg');
-  const svgWidth = svg.getAttribute('width');
-  const svgHeight = svg.getAttribute('height');
+  const div = document.getElementById('container');
+  const svgWidth = div.offsetWidth;
+  const svgHeight = div.offsetHeight;
+  console.log([svgWidth, svgHeight])
 
   //use svg width and height to determine the coords of the floor
-  const floorHeight = Math.min(svgHeight / 2, svgWidth / (2 * Math.sqrt(3))) - STROKE_OFFSET;
+  const floorHeight = Math.min(svgHeight / 3, svgWidth / (2 * Math.sqrt(3))) - STROKE_OFFSET;
   const floorWidth = floorHeight * Math.sqrt(3);
   floorCoords.push([svgWidth / 2 - floorWidth, svgHeight - floorHeight - STROKE_OFFSET]);
   floorCoords.push([svgWidth / 2, svgHeight - STROKE_OFFSET]);
