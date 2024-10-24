@@ -21,6 +21,7 @@ function init() {
   const expertButton = document.getElementById('expert');
   const helpButton = document.getElementById('help');
   const overlay = document.getElementById('overlay');
+  const info = document.getElementById('info');
   let board_size = [9, 9];
   let num_mines = 10;
 
@@ -43,9 +44,11 @@ function init() {
   });
   helpButton.addEventListener('click', () => {
     overlay.style.display = "block";
+    info.className = 'info_enter';
   })
   overlay.addEventListener('click', () => {
     overlay.style.display = "none";
+    info.className = 'info_exit';
   });
 
   onmousedown = (event) => {
