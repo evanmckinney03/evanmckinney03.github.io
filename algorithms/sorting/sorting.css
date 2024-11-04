@@ -1,0 +1,20 @@
+#body {
+  margin: 0px;
+  display: flex;
+  align-content: center;
+  height: 100%;
+}
+
+#array-container {
+  display: flex;
+  flex-wrap: none;
+  justify-content: center;
+  background-color: beige;
+}
+
+#array-container > div {
+  background-color: grey;
+  text-align: center;
+  padding: 10px;
+  border: 1px solid red;
+}
