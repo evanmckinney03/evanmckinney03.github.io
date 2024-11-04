@@ -1,3 +1,4 @@
+let size = 0;
 
 window.onload = init;
 
@@ -5,12 +6,15 @@ function init() {
   document.addEventListener('keydown', function(e) {
     if(e.key == 'ArrowUp') {
       addElement();
+    } else if(e.key == 'ArrowDown') {
+      removeElement();
     }
   });
   addElement();
 }
 
 function addElement() {
+  size++;
   const arrayContainer = document.getElementById('array-container');
   const newElement = document.createElement('div');
   const input = document.createElement('input');
@@ -18,7 +22,8 @@ function addElement() {
   //using input type=number adds arrows to the input box
   input.setAttribute('type', 'text');
   input.setAttribute('inputmode', 'numeric');
-  input.setAttribute('value', '0');
+  input.setAttribute('value', size);
+  input.setAttribute('id', 'array' + size);
   input.addEventListener('input', function() {
     //max value should be 999 and make sure values are only numeric
     if(this.value.length > 3) {
@@ -37,5 +42,10 @@ function addElement() {
 }
 
 function removeElement() {
-
+  //ensure there is at least one element in the array
+  if(size > 1) {
+    const arrayContainer = document.getElementById('array-container');
+    arrayContainer.removeChild(arrayContainer.lastChild);
+    size--;
+  }
 }
