@@ -13,10 +13,11 @@ function init() {
   addElement();
 }
 
+//adds an element to the array
 function addElement() {
-  size++;
   const arrayContainer = document.getElementById('array-container');
   const newElement = document.createElement('div');
+  newElement.setAttribute('id', 'div' + size);
   const input = document.createElement('input');
   input.setAttribute('class', 'text');
   //using input type=number adds arrows to the input box
@@ -39,8 +40,10 @@ function addElement() {
   });
   newElement.appendChild(input);
   arrayContainer.appendChild(newElement);
+  size++;
 }
 
+//removes an element from the array
 function removeElement() {
   //ensure there is at least one element in the array
   if(size > 1) {
@@ -48,4 +51,54 @@ function removeElement() {
     arrayContainer.removeChild(arrayContainer.lastChild);
     size--;
   }
+}
+
+//swaps two elements, arguments should just be numbers of elements to swap
+async function swapAnimation(e1, e2) {
+  const elem1 = document.getElementById('div' + Math.min(e1, e2));
+  const elem2 = document.getElementById('div' + Math.max(e1, e2));
+  const elemHeight = elem1.offsetHeight;
+  const elemWidth = elem1.offsetWidth;
+  //every transition takes 1 second
+  elem1.setAttribute('class', 'transition1s');
+  elem2.setAttribute('class', 'transition1s');
+  const distance = Math.abs(e1 - e2);
+  console.log('starting animation');
+  //move elem1 and elem 2 up, then wait for animation to finish
+  let elem1Style = `translateY(-${elemHeight * 2}px)`;
+  let elem2Style = `translateY(-${elemHeight}px)`;
+  elem1.style.transform = elem1Style;
+  elem2.style.transform = elem2Style;
+  await sleep(1000);
+  //move elem1 and elem2 left/right and wait for animation
+  elem1Style += ` translateX(${distance * elemWidth}px)`;
+  elem2Style += ` translateX(-${distance * elemWidth}px)`;
+  elem1.style.transform = elem1Style;
+  elem2.style.transform = elem2Style;
+  await sleep(1000);
+  //move elem1 and elem2 down and wait
+  elem1.style.transform = elem1Style.split(' ')[1];
+  elem2.style.transform = elem2Style.split(' ')[1];
+  await sleep(1000);
+  //remove the classes and styles and swap the values
+  elem1.removeAttribute('style');
+  elem1.classList.remove('transition1s');
+  elem2.removeAttribute('style');
+  elem2.classList.remove('transition1s');
+  //swap
+  const temp = elem1.firstElementChild.value;
+  elem1.firstElementChild.value = elem2.firstElementChild.value;
+  elem2.firstElementChild.value = temp;
+  console.log('animation done');
+}
+
+function addClass() {
+  const div1 = document.getElementById('div1');
+  div1.setAttribute('class', 'transition1s');
+  div1.style.transform = 'translateY(-50px)';
+}
+
+//sleeps for given amount of milliseconds, used in animations
+function sleep(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
 }
