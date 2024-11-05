@@ -10,6 +10,18 @@ function init() {
   addElement();
 }
 
+function Step(func, arg1, arg2){
+  this.func = func;
+  this.arg1 = arg1;
+  this.arg2 = arg2;
+  this.setFunction = function(func) {
+    this.func = func;
+  }
+  this.run = function() {
+    func(arg1, arg2);
+  }
+}
+
 //adds an element to the array
 function addElement() {
   const arrayContainer = document.getElementById('array-container');
@@ -99,3 +111,4 @@ function addClass() {
 function sleep(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
+
