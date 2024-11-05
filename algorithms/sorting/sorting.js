@@ -10,6 +10,7 @@ function init() {
   addElement();
 }
 
+//an object that represents a step in the algorithm sequence
 function Step(func, arg1, arg2){
   this.func = func;
   this.arg1 = arg1;
@@ -101,10 +102,16 @@ async function swapAnimation(e1, e2) {
   console.log('animation done');
 }
 
-function addClass() {
-  const div1 = document.getElementById('div1');
-  div1.setAttribute('class', 'transition1s');
-  div1.style.transform = 'translateY(-50px)';
+//highlights an element
+//e should be an integer
+function highlight(e) {
+  document.getElementById('div' + e).classList.add('highlight');
+}
+
+//unhighlights an element
+//e should be an integer
+function unhighlight(e) {
+  document.getElementById('div' + e).classList.remove('highlight');
 }
 
 //sleeps for given amount of milliseconds, used in animations
