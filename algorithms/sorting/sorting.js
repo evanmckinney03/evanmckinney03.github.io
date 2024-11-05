@@ -57,8 +57,8 @@ function removeElement() {
 async function swapAnimation(e1, e2) {
   const elem1 = document.getElementById('div' + Math.min(e1, e2));
   const elem2 = document.getElementById('div' + Math.max(e1, e2));
-  const elemHeight = elem1.offsetHeight;
-  const elemWidth = elem1.offsetWidth;
+  const elemHeight = elem1.getBoundingClientRect().height;
+  const elemWidth = elem1.getBoundingClientRect().width;
   //every transition takes 1 second
   elem1.setAttribute('class', 'transition1s');
   elem2.setAttribute('class', 'transition1s');
