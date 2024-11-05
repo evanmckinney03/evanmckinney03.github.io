@@ -3,13 +3,10 @@ let size = 0;
 window.onload = init;
 
 function init() {
-  document.addEventListener('keydown', function(e) {
-    if(e.key == 'ArrowUp') {
-      addElement();
-    } else if(e.key == 'ArrowDown') {
-      removeElement();
-    }
-  });
+  const addButton = document.getElementById('add');
+  const removeButton = document.getElementById('remove');
+  addButton.addEventListener('click', addElement);
+  removeButton.addEventListener('click', removeElement);
   addElement();
 }
 
