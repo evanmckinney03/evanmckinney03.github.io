@@ -75,7 +75,6 @@ async function swapAnimation(e1, e2) {
   elem1.style.transition = `transform ${speed}ms`;
   elem2.style.transition = `transform ${speed}ms`;
   const distance = Math.abs(e1 - e2);
-  console.log('starting animation');
   //move elem1 and elem 2 up, then wait for animation to finish
   let elem1Style = `translateY(-${elemHeight * 2}px)`;
   let elem2Style = `translateY(-${elemHeight}px)`;
@@ -99,7 +98,6 @@ async function swapAnimation(e1, e2) {
   const temp = elem1.firstElementChild.value;
   elem1.firstElementChild.value = elem2.firstElementChild.value;
   elem2.firstElementChild.value = temp;
-  console.log('animation done');
 }
 
 //highlights an element
@@ -112,6 +110,22 @@ function highlight(e) {
 //e should be an integer
 function unhighlight(e) {
   document.getElementById('div' + e).classList.remove('highlight');
+}
+
+//lock array
+function lock() {
+  const array = document.getElementById('array-container').children;
+  for(let i = 0; i < array.length; i++) {
+    array[i].firstElementChild.readOnly = true;
+  }
+}
+
+//unlock array
+function unlock() {
+  const array = document.getElementById('array-container').children;
+  for(let i = 0; i < array.length; i++) {
+    array[i].firstElementChild.readOnly = false;
+  }
 }
 
 //sleeps for given amount of milliseconds, used in animations
