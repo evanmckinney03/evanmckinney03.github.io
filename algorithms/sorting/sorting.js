@@ -1,4 +1,5 @@
 let size = 0;
+const schedule = [];
 
 window.onload = init;
 
@@ -18,9 +19,44 @@ function Step(func, arg1, arg2){
   this.setFunction = function(func) {
     this.func = func;
   }
-  this.run = function() {
-    func(arg1, arg2);
+  this.run = function(speed) {
+    func(arg1, arg2, speed);
   }
+}
+
+//populates the schedule with steps of animation
+function makeSchedule() {
+  //get values from the array
+  const arrayContainer = document.getElementById('array-container').children;
+  const array = [];
+  for(let i = 0; i < arrayContainer.length; i++) {
+    array.push(parseInt(arrayContainer[i].firstElementChild.value));
+  }
+  //use drop down to select algo, for now just bubble
+  bubbleSchedule(array);
+}
+
+//adds to schedule the steps for a bubble sort
+//modifies the array variable, but not what is shown on screen
+function bubbleSchedule(array) {
+  //bubble sort
+  for(let i = 0; i < array.length; i++) {
+    for(let j = 0; j < array.length - i - 1; j++) {
+      //comparison
+      schedule.push(new Step(compareAnimation, j, j + 1));
+      if(array[j] > array[j + 1]) {
+        schedule.push(new Step(swapAnimation, j, j + 1));
+	//swap
+        const temp = array[j];
+	array[j] = array[j + 1];
+	array[j + 1] = temp;
+      }
+    }
+  }
+}
+
+function playStep(stepNum, speed) {
+  schedule[stepNum].run(speed);
 }
 
 //adds an element to the array
@@ -49,6 +85,7 @@ function addElement() {
     }
   });
   newElement.appendChild(input);
+  //arrayContainer.insertBefore(newElement, arrayContainer.firstElementChild);
   arrayContainer.appendChild(newElement);
   size++;
 }
@@ -58,15 +95,14 @@ function removeElement() {
   //ensure there is at least one element in the array
   if(size > 1) {
     const arrayContainer = document.getElementById('array-container');
-    arrayContainer.removeChild(arrayContainer.lastChild);
+    arrayContainer.removeChild(arrayContainer.lastElementChild);
     size--;
   }
 }
 
 //swaps two elements, arguments should just be numbers of elements to swap
-async function swapAnimation(e1, e2) {
+async function swapAnimation(e1, e2, speed) {
   //speed of each animation step
-  const speed = 1000;
   const elem1 = document.getElementById('div' + Math.min(e1, e2));
   const elem2 = document.getElementById('div' + Math.max(e1, e2));
   const elemHeight = elem1.getBoundingClientRect().height;
@@ -99,6 +135,29 @@ async function swapAnimation(e1, e2) {
   elem1.firstElementChild.value = elem2.firstElementChild.value;
   elem2.firstElementChild.value = temp;
 }
+
+//compares two elements in an animation
+//paramters should be integers
+async function compareAnimation(e1, e2, speed) {
+  const elem1 = document.getElementById('div' + e1);
+  const elem2 = document.getElementById('div' + e2);
+  const larger = elem1.firstElementChild.value > elem2.firstElementChild.value ? elem1 : elem2;
+  //highlight the elements
+  highlight(e1);
+  highlight(e2);
+  //wait speed ms
+  await sleep(speed);
+  //make the larger one bigger for a moment
+  larger.style.transition = `transform ${speed / 2}ms`;
+  larger.style.transform = 'scale(1.1, 1.1)';
+  await sleep(speed / 2);
+  larger.style.transform = 'scale(1, 1)';
+  await sleep(speed);
+  unhighlight(e1);
+  unhighlight(e2);
+  larger.removeAttribute('style');
+}
+
 
 //highlights an element
 //e should be an integer
