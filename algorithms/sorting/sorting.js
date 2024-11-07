@@ -1,13 +1,18 @@
 let size = 0;
 const schedule = [];
+let position = 0;
 
 window.onload = init;
 
 function init() {
   const addButton = document.getElementById('add');
   const removeButton = document.getElementById('remove');
+  const nextButton = document.getElementById('next');
+  const previousButton = document.getElementById('previous');
+
   addButton.addEventListener('click', addElement);
   removeButton.addEventListener('click', removeElement);
+  nextButton.addEventListener('click', nextClicked);
   addElement();
 }
 
@@ -19,8 +24,8 @@ function Step(func, arg1, arg2){
   this.setFunction = function(func) {
     this.func = func;
   }
-  this.run = function(speed) {
-    func(arg1, arg2, speed);
+  this.run = async function(speed) {
+    await func(arg1, arg2, speed);
   }
 }
 
@@ -55,8 +60,19 @@ function bubbleSchedule(array) {
   }
 }
 
-function playStep(stepNum, speed) {
-  schedule[stepNum].run(speed);
+//what to run when the next button is clicked
+async function nextClicked() {
+  const button = document.getElementById('next');
+  button.disabled = true;
+  console.log(1)
+  if(schedule.length == 0) makeSchedule();
+  await playStep(position++, 500);
+  button.disabled = false;
+  console.log(2)
+}
+
+async function playStep(stepNum, speed) {
+  await schedule[stepNum].run(speed);
 }
 
 //adds an element to the array
