@@ -13,7 +13,11 @@ function init() {
   addButton.addEventListener('click', addElement);
   removeButton.addEventListener('click', removeElement);
   nextButton.addEventListener('click', nextClicked);
+  previousButton.addEventListener('click', previousClicked);
   addElement();
+
+  //previous button starts disabled
+  previousButton.disabled = true;
 }
 
 //an object that represents a step in the algorithm sequence
@@ -62,13 +66,29 @@ function bubbleSchedule(array) {
 
 //what to run when the next button is clicked
 async function nextClicked() {
-  const button = document.getElementById('next');
-  button.disabled = true;
-  console.log(1)
+  const nextButton = document.getElementById('next');
+  const previousButton = document.getElementById('previous');
+  nextButton.disabled = true;
+  previousButton.disabled = true;
   if(schedule.length == 0) makeSchedule();
   await playStep(position++, 500);
-  button.disabled = false;
-  console.log(2)
+  if(position != schedule.length) {
+    nextButton.disabled = false;
+  }
+  previousButton.disabled = false;
+}
+
+//what to run when the previous button is clicked
+async function previousClicked() {
+  const previousButton = document.getElementById('previous');
+  const nextButton = document.getElementById('next');
+  previousButton.disabled = true;
+  nextButton.disabled = true;
+  await playStep(--position, 500);
+  if(position != 0) {
+    previousButton.disabled = false;
+  }
+  nextButton.disabled = false;
 }
 
 async function playStep(stepNum, speed) {
@@ -157,7 +177,7 @@ async function swapAnimation(e1, e2, speed) {
 async function compareAnimation(e1, e2, speed) {
   const elem1 = document.getElementById('div' + e1);
   const elem2 = document.getElementById('div' + e2);
-  const larger = elem1.firstElementChild.value > elem2.firstElementChild.value ? elem1 : elem2;
+  const larger = parseInt(elem1.firstElementChild.value) > parseInt(elem2.firstElementChild.value) ? elem1 : elem2;
   //highlight the elements
   highlight(e1);
   highlight(e2);
