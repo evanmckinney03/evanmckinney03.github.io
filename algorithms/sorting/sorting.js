@@ -9,15 +9,18 @@ function init() {
   const removeButton = document.getElementById('remove');
   const nextButton = document.getElementById('next');
   const previousButton = document.getElementById('previous');
+  const resetButton = document.getElementById('reset');
 
   addButton.addEventListener('click', addElement);
   removeButton.addEventListener('click', removeElement);
   nextButton.addEventListener('click', nextClicked);
   previousButton.addEventListener('click', previousClicked);
+  resetButton.addEventListener('click', resetClicked);
   addElement();
 
-  //previous button starts disabled
+  //previous and reset button starts disabled
   previousButton.disabled = true;
+  resetButton.disabled = true;
 }
 
 //an object that represents a step in the algorithm sequence
@@ -65,12 +68,13 @@ function bubbleSchedule(array) {
 }
 
 //what to run when the next button is clicked
+//disable the buttons while running, then play the next animation
 async function nextClicked() {
   const nextButton = document.getElementById('next');
   const previousButton = document.getElementById('previous');
   nextButton.disabled = true;
   previousButton.disabled = true;
-  if(schedule.length == 0) makeSchedule();
+  if(schedule.length == 0) arrayInit();
   await playStep(position++, 500);
   if(position != schedule.length) {
     nextButton.disabled = false;
@@ -79,6 +83,7 @@ async function nextClicked() {
 }
 
 //what to run when the previous button is clicked
+//disable buttons while running, then play previous animation
 async function previousClicked() {
   const previousButton = document.getElementById('previous');
   const nextButton = document.getElementById('next');
@@ -91,8 +96,31 @@ async function previousClicked() {
   nextButton.disabled = false;
 }
 
+//what to run when the reset button is clicked
+//clear the schedule, disable previous and reset button, and enable add/remove and next buttons
+function resetClicked() {
+  document.getElementById('reset').disabled = true;
+  document.getElementById('previous').disabled = true;
+  document.getElementById('add').disabled = false;
+  document.getElementById('remove').disabled = false;
+  document.getElementById('next').disabled = false;
+  schedule.length = 0;
+  position = 0;
+  unlock();
+}
+
 async function playStep(stepNum, speed) {
   await schedule[stepNum].run(speed);
+}
+
+//will disable the add/remove buttons, enable the reset button
+//also generates the schedule and locks the array
+function arrayInit() {
+  makeSchedule();
+  lock();
+  document.getElementById('add').disabled = true;
+  document.getElementById('remove').disabled = true;
+  document.getElementById('reset').disabled = false;
 }
 
 //adds an element to the array
