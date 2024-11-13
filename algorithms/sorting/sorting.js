@@ -10,12 +10,14 @@ function init() {
   const nextButton = document.getElementById('next');
   const previousButton = document.getElementById('previous');
   const resetButton = document.getElementById('reset');
+  const startButton = document.getElementById('start');
 
   addButton.addEventListener('click', addElement);
   removeButton.addEventListener('click', removeElement);
   nextButton.addEventListener('click', nextClicked);
   previousButton.addEventListener('click', previousClicked);
   resetButton.addEventListener('click', resetClicked);
+  startButton.addEventListener('click', startClicked);
   addElement();
 
   //previous and reset button starts disabled
@@ -70,14 +72,13 @@ function bubbleSchedule(array) {
 //what to run when the next button is clicked
 //disable the buttons while running, then play the next animation
 async function nextClicked() {
-  const nextButton = document.getElementById('next');
   const previousButton = document.getElementById('previous');
-  nextButton.disabled = true;
+  this.disabled = true;
   previousButton.disabled = true;
   if(schedule.length == 0) arrayInit();
-  await playStep(position++, 500);
+  await playStep(position++, 1500);
   if(position != schedule.length) {
-    nextButton.disabled = false;
+    this.disabled = false;
   }
   previousButton.disabled = false;
 }
@@ -85,13 +86,12 @@ async function nextClicked() {
 //what to run when the previous button is clicked
 //disable buttons while running, then play previous animation
 async function previousClicked() {
-  const previousButton = document.getElementById('previous');
   const nextButton = document.getElementById('next');
-  previousButton.disabled = true;
+  this.disabled = true;
   nextButton.disabled = true;
-  await playStep(--position, 500);
+  await playStep(--position, 1500);
   if(position != 0) {
-    previousButton.disabled = false;
+    this.disabled = false;
   }
   nextButton.disabled = false;
 }
@@ -99,7 +99,7 @@ async function previousClicked() {
 //what to run when the reset button is clicked
 //clear the schedule, disable previous and reset button, and enable add/remove and next buttons
 function resetClicked() {
-  document.getElementById('reset').disabled = true;
+  this.disabled = true;
   document.getElementById('previous').disabled = true;
   document.getElementById('add').disabled = false;
   document.getElementById('remove').disabled = false;
@@ -107,6 +107,42 @@ function resetClicked() {
   schedule.length = 0;
   position = 0;
   unlock();
+}
+
+let intervalId;
+//what to run when the start button is clicked
+//make it say start/stop, and add/remove interval
+async function startClicked() {
+  const nextButton = document.getElementById('next');
+  const previousButton = document.getElementById('previous');
+  if(this.value == 'Start') {
+    this.value = 'Stop';
+    if(schedule.length == 0) arrayInit();
+    nextButton.disabled = true;
+    previousButton.disabled = true;
+    playStep(position++, 1500);
+    if(!intervalId) {
+      intervalId = setInterval(() => {
+        if(position >= schedule.length) {
+          stopPlaying();
+          resetClicked();
+        } else {
+          playStep(position++, 1500);
+        }
+      }, 2000);
+    }
+  } else {
+    stopPlaying();
+  }
+}
+
+//stop the automatic playing of the sorting
+function stopPlaying() {
+  document.getElementById('start').value = 'Start';
+  clearInterval(intervalId);
+  intervalId = null;
+  if(position != 0) document.getElementById('previous').disabled = false;
+  if(position != schedule.length) document.getElementById('next').disabled = false;
 }
 
 async function playStep(stepNum, speed) {
@@ -171,26 +207,26 @@ async function swapAnimation(e1, e2, speed) {
   const elem2 = document.getElementById('div' + Math.max(e1, e2));
   const elemHeight = elem1.getBoundingClientRect().height;
   const elemWidth = elem1.getBoundingClientRect().width;
-  //every transition takes 1 second
-  elem1.style.transition = `transform ${speed}ms`;
-  elem2.style.transition = `transform ${speed}ms`;
+  //every transition takes a total of speed ms
+  elem1.style.transition = `transform ${speed/3}ms`;
+  elem2.style.transition = `transform ${speed/3}ms`;
   const distance = Math.abs(e1 - e2);
   //move elem1 and elem 2 up, then wait for animation to finish
   let elem1Style = `translateY(-${elemHeight * 2}px)`;
   let elem2Style = `translateY(-${elemHeight}px)`;
   elem1.style.transform = elem1Style;
   elem2.style.transform = elem2Style;
-  await sleep(speed);
+  await sleep(speed / 3);
   //move elem1 and elem2 left/right and wait for animation
   elem1Style += ` translateX(${distance * elemWidth}px)`;
   elem2Style += ` translateX(-${distance * elemWidth}px)`;
   elem1.style.transform = elem1Style;
   elem2.style.transform = elem2Style;
-  await sleep(speed);
+  await sleep(speed / 3);
   //move elem1 and elem2 down and wait
   elem1.style.transform = elem1Style.split(' ')[1];
   elem2.style.transform = elem2Style.split(' ')[1];
-  await sleep(speed);
+  await sleep(speed / 3);
   //remove the styles and swap the values
   elem1.removeAttribute('style');
   elem2.removeAttribute('style');
@@ -209,14 +245,14 @@ async function compareAnimation(e1, e2, speed) {
   //highlight the elements
   highlight(e1);
   highlight(e2);
-  //wait speed ms
-  await sleep(speed);
+  //wait 2 * speed / 5 ms so that total animation time is speed length
+  await sleep(2 * speed / 5);
   //make the larger one bigger for a moment
-  larger.style.transition = `transform ${speed / 2}ms`;
+  larger.style.transition = `transform ${speed / 5}ms`;
   larger.style.transform = 'scale(1.1, 1.1)';
-  await sleep(speed / 2);
+  await sleep(speed / 5);
   larger.style.transform = 'scale(1, 1)';
-  await sleep(speed);
+  await sleep(2 * speed / 5);
   unhighlight(e1);
   unhighlight(e2);
   larger.removeAttribute('style');
