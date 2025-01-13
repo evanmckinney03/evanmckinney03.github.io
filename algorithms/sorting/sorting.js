@@ -38,6 +38,7 @@ function Step(func, arg1, arg2){
   }
 }
 
+const algs = [bubbleSchedule, insertionSchedule];
 //populates the schedule with steps of animation
 function makeSchedule() {
   //get values from the array
@@ -47,7 +48,8 @@ function makeSchedule() {
     array.push(parseInt(arrayContainer[i].firstElementChild.value));
   }
   //use drop down to select algo, for now just bubble
-  bubbleSchedule(array);
+  const menu = document.getElementById('algs');
+  algs[menu.value](array);
 }
 
 //adds to schedule the steps for a bubble sort
@@ -67,6 +69,11 @@ function bubbleSchedule(array) {
       }
     }
   }
+}
+
+//adds to schedule the steps for a bubble sort
+function insertionSchedule(array) {
+  
 }
 
 //what to run when the next button is clicked
