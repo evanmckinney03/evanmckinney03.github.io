@@ -1,6 +1,71 @@
+body {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  margin: 0;
+}
+
 #svg {
   user-select: none;
   background-color: lightgrey;
+  border: solid black 1px;
+}
+
+#bottom_row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  user-select: none;
+}
+
+#overlay {
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background-color: rgba(0,0,0,0.5);
+  z-index: 2;
+}
+
+#info {
+  position: fixed;
+  width: 33%;
+  height: 100%;
+  background-color: lightgrey;
+  z-index: 3;
+  top: 0;
+  bottom: 0;
+  left: -35%;
+  padding: 5px;
+  font-family: Verdana, Arial, sans-serif;
+}
+
+.info_enter {
+  animation-name: enter;
+  animation-duration: 250ms;
+  animation-fill-mode: forwards;
+  animation-timing-function: ease-in;
+}
+
+@keyframes enter {
+  from {left: -35%;}
+  to {left: 0;}
+}
+
+.info_exit {
+  animation-name: exit;
+  animation-duration: 250ms;
+  animation-fill-mode: forwards;
+  animation-timing-function: ease-in;
+}
+
+@keyframes exit {
+  from {left: 0;}
+  to {left: -35%;}
 }
 
 .text {
@@ -8,6 +73,9 @@
   text-anchor: middle;
   dominant-baseline: middle;
   user-select: none;
+  font-family: "Press Start 2P", system-ui;
+  font-weight: 400;
+  font-style: normal;
 }
 
 .text1 {
@@ -67,11 +135,17 @@
 
 .topRect {
   fill: darkgrey;
+  stroke: grey;
+  stroke-width: 1px;
 }
 
 .topText {
   fill: red;
   dominant-baseline: auto;
+  font-family: "Press Start 2P", system-ui;
+  font-weight: 400;
+  font-style: normal;
+  font-size: 22px;
 }
 
 .smileyCircle {
@@ -93,4 +167,9 @@
   dominant-baseline: middle;
   user-select: none;
   font-family: Monaco, Arial, sans-serif;
+}
+
+#buttons > button {
+  font-family: Verdana, Arial, sans-serif;
+  font-size: 12px;
 }

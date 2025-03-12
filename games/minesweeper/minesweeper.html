@@ -2,13 +2,29 @@
 <html>
 <head>
 <link rel="stylesheet" href="minesweeper.css" type="text/css" />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0&icon_names=help" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
 </head>
 <body>
+  <div id="overlay" style="display: none;">
+  </div>
+  <div id="info">
+    <p>Each minesweeper grid is randomly filled with bombs. To win a game, every non-bomb tile must be revealed. Revealing a bomb instantly loses the game. Otherwise, a number is revealed which counts the bombs in the adjacent eight tiles. An empty tile means there are zero bombs and will be automatically revealed for you. Left click will reveal a tile, right click will mark a tile as a bomb, or as a possible bomb.</p>
+    <p>The number in the top left is the number of mines on the board. The number goes down each time a tile is marked as a bomb, even if incorrectly marked. The number in the top left is a timer. The face in the middle is used to start a new game.</p>
+  </div>
+  <div id="container">
   <svg id="svg" width="1200" height="800" xmlns="http://www.w3.org/2000/svg"></svg>
   <script src="minesweeper.js"></script>
-  <br>
+  <div id="bottom_row">
+  <div id="buttons">
   <button id="easy">Easy</button>
   <button id="intermediate">Intermediate</button>
   <button id="expert">Expert</button>
+  </div>
+  <span id= "help" class="material-symbols-outlined">help</span>
+  </div>
+  </div>
 </body>
 </html>

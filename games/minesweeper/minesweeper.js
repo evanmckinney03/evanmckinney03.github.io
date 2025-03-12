@@ -1,5 +1,6 @@
 const SQ_WIDTH = 35;
 const BORDER_WIDTH = 2;
+//distance between left side of svg and grid
 const START_OFFSET_X = 10;
 //height of the top bar
 const TOP_HEIGHT = 40;
@@ -10,17 +11,17 @@ const TEXT_IN = 2;
 const MOUTH_X_DISTANCE = TOP_HEIGHT / 4 + 1;
 const MOUTH_Y_DISTANCE = TOP_HEIGHT / 2 + 6;
 
-//used for mousedown event to calculate if clicking within the grid
-const MARGIN = 8;
-
 let timer;
 
 window.onload = init;
 
 function init() {
-  let easyButton = document.getElementById('easy');
-  let intermediateButton = document.getElementById('intermediate');
-  let expertButton = document.getElementById('expert');
+  const easyButton = document.getElementById('easy');
+  const intermediateButton = document.getElementById('intermediate');
+  const expertButton = document.getElementById('expert');
+  const helpButton = document.getElementById('help');
+  const overlay = document.getElementById('overlay');
+  const info = document.getElementById('info');
   let board_size = [9, 9];
   let num_mines = 10;
 
@@ -41,11 +42,21 @@ function init() {
     num_mines = 99;
     gameInit(board_size, num_mines);
   });
+  helpButton.addEventListener('click', () => {
+    overlay.style.display = "block";
+    info.className = 'info_enter';
+  })
+  overlay.addEventListener('click', () => {
+    overlay.style.display = "none";
+    info.className = 'info_exit';
+  });
 
   onmousedown = (event) => {
-    let grid_border = [[START_OFFSET_X, START_OFFSET_Y], 
-	    [START_OFFSET_X + board_size[0] * SQ_WIDTH, START_OFFSET_Y + board_size[1] * SQ_WIDTH]];
-    let click = [event.pageX - MARGIN, event.pageY - MARGIN];
+    let svgBounds = document.getElementById('svg').getBoundingClientRect();
+    let grid_border = [[svgBounds.left + START_OFFSET_X, svgBounds.top + START_OFFSET_Y], 
+	    [svgBounds.left + START_OFFSET_X + board_size[0] * SQ_WIDTH, 
+		    svgBounds.top + START_OFFSET_Y + board_size[1] * SQ_WIDTH]];
+    let click = [event.pageX, event.pageY];
     //checks to see if click was within grid
     if(click[0] >= grid_border[0][0] && click[0] < grid_border[1][0] 
 	    && click[1] >= grid_border[0][1] && click[1] < grid_border[1][1]) {
@@ -158,25 +169,25 @@ function populateSVG(gameBoard, numCleared, num_mines) {
       square.setAttribute('id', i + ',' + j + ',square');
       square.setAttribute('class', 'newSquare');
       square.addEventListener('click', function () {
-	if(numCleared == 0) {
+	      if(numCleared == 0) {
           rerollUntilGoodStart(this.id, gameBoard, num_mines);
-	  startTimer();
-	}
+	        startTimer();
+	      }
         numCleared += reveal(this.id, gameBoard);
-	if(numCleared == gameBoard.length * gameBoard[0].length - num_mines) {
-	  win(gameBoard);
-	}
+	      if(numCleared == gameBoard.length * gameBoard[0].length - num_mines) {
+	        win(gameBoard);
+	      }
       });
       square.addEventListener('contextmenu', function(event) {
         event.preventDefault();
-	let isWon = numCleared == gameBoard.length * gameBoard[0].length - num_mines;
-	mark(this.id, isWon);
+	      let isWon = numCleared == gameBoard.length * gameBoard[0].length - num_mines;
+	      mark(this.id, isWon);
       })
       svg.appendChild(square);
       let text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
       text.setAttribute('class', 'text');
-      text.setAttribute('x', i * SQ_WIDTH + Math.floor(SQ_WIDTH / 2) + START_OFFSET_X);
-      text.setAttribute('y', j * SQ_WIDTH + Math.floor(SQ_WIDTH / 2) + START_OFFSET_Y);
+      text.setAttribute('x', i * SQ_WIDTH + Math.floor(SQ_WIDTH / 2) + START_OFFSET_X + 1);
+      text.setAttribute('y', j * SQ_WIDTH + Math.floor(SQ_WIDTH / 2) + START_OFFSET_Y + 2);
       text.setAttribute('id', i + ',' + j + ',text');
       svg.appendChild(text);
     }
@@ -424,7 +435,7 @@ function reveal(id, gameBoard) {
       for(let i = -1; i <= 1; i++) {
         for(let j = -1; j <= 1; j++) {
           numCleared += reveal((id_x + i) + ',' + (id_y + j), gameBoard);
-	}
+      	}
       }
     }
   }
