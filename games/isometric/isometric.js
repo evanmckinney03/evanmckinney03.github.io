@@ -14,7 +14,20 @@ function init() {
   const div = document.getElementById('container');
   const svgWidth = div.offsetWidth;
   const svgHeight = div.offsetHeight;
-  console.log([svgWidth, svgHeight])
+  const overlay = document.getElementById('overlay');
+  const info = document.getElementById('info');
+  const helpButton = document.getElementById('help');
+  
+  helpButton.addEventListener('click', () => {
+    overlay.style.display = 'block';
+    info.className = 'info_enter';
+  });
+
+  overlay.addEventListener('click', () => {
+    overlay.style.display = 'none';
+    info.className = 'info_exit';
+  });
+  
 
   //use svg width and height to determine the coords of the floor
   const floorHeight = Math.min(svgHeight / 3, svgWidth / (2 * Math.sqrt(3))) - STROKE_OFFSET;
