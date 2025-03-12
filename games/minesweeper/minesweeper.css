@@ -9,11 +9,13 @@ body {
 #svg {
   user-select: none;
   background-color: lightgrey;
+  border: solid black 1px;
 }
 
 #bottom_row {
   display: flex;
   justify-content: space-between;
+  align-items: center;
   user-select: none;
 }
 
@@ -37,8 +39,9 @@ body {
   z-index: 3;
   top: 0;
   bottom: 0;
-  left: -33%;
+  left: -35%;
   padding: 5px;
+  font-family: Verdana, Arial, sans-serif;
 }
 
 .info_enter {
@@ -49,7 +52,7 @@ body {
 }
 
 @keyframes enter {
-  from {left: -33%;}
+  from {left: -35%;}
   to {left: 0;}
 }
 
@@ -62,7 +65,7 @@ body {
 
 @keyframes exit {
   from {left: 0;}
-  to {left: -33%;}
+  to {left: -35%;}
 }
 
 .text {
@@ -70,6 +73,9 @@ body {
   text-anchor: middle;
   dominant-baseline: middle;
   user-select: none;
+  font-family: "Press Start 2P", system-ui;
+  font-weight: 400;
+  font-style: normal;
 }
 
 .text1 {
@@ -129,11 +135,17 @@ body {
 
 .topRect {
   fill: darkgrey;
+  stroke: grey;
+  stroke-width: 1px;
 }
 
 .topText {
   fill: red;
   dominant-baseline: auto;
+  font-family: "Press Start 2P", system-ui;
+  font-weight: 400;
+  font-style: normal;
+  font-size: 22px;
 }
 
 .smileyCircle {
@@ -155,4 +167,9 @@ body {
   dominant-baseline: middle;
   user-select: none;
   font-family: Monaco, Arial, sans-serif;
+}
+
+#buttons > button {
+  font-family: Verdana, Arial, sans-serif;
+  font-size: 12px;
 }

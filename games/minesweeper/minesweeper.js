@@ -169,25 +169,25 @@ function populateSVG(gameBoard, numCleared, num_mines) {
       square.setAttribute('id', i + ',' + j + ',square');
       square.setAttribute('class', 'newSquare');
       square.addEventListener('click', function () {
-	if(numCleared == 0) {
+	      if(numCleared == 0) {
           rerollUntilGoodStart(this.id, gameBoard, num_mines);
-	  startTimer();
-	}
+	        startTimer();
+	      }
         numCleared += reveal(this.id, gameBoard);
-	if(numCleared == gameBoard.length * gameBoard[0].length - num_mines) {
-	  win(gameBoard);
-	}
+	      if(numCleared == gameBoard.length * gameBoard[0].length - num_mines) {
+	        win(gameBoard);
+	      }
       });
       square.addEventListener('contextmenu', function(event) {
         event.preventDefault();
-	let isWon = numCleared == gameBoard.length * gameBoard[0].length - num_mines;
-	mark(this.id, isWon);
+	      let isWon = numCleared == gameBoard.length * gameBoard[0].length - num_mines;
+	      mark(this.id, isWon);
       })
       svg.appendChild(square);
       let text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
       text.setAttribute('class', 'text');
-      text.setAttribute('x', i * SQ_WIDTH + Math.floor(SQ_WIDTH / 2) + START_OFFSET_X);
-      text.setAttribute('y', j * SQ_WIDTH + Math.floor(SQ_WIDTH / 2) + START_OFFSET_Y);
+      text.setAttribute('x', i * SQ_WIDTH + Math.floor(SQ_WIDTH / 2) + START_OFFSET_X + 1);
+      text.setAttribute('y', j * SQ_WIDTH + Math.floor(SQ_WIDTH / 2) + START_OFFSET_Y + 2);
       text.setAttribute('id', i + ',' + j + ',text');
       svg.appendChild(text);
     }
@@ -435,7 +435,7 @@ function reveal(id, gameBoard) {
       for(let i = -1; i <= 1; i++) {
         for(let j = -1; j <= 1; j++) {
           numCleared += reveal((id_x + i) + ',' + (id_y + j), gameBoard);
-	}
+      	}
       }
     }
   }
