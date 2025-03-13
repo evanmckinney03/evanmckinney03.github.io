@@ -1,0 +1,109 @@
+#svg {
+  background-color: beige;
+  width: 100%;
+  height: 100%;
+}
+
+#container {
+  height: 100%;
+  width: 100%;
+}
+
+body {
+  margin: 0;
+  height: 100vh;
+  overflow-y: hidden;
+}
+
+.top {
+  fill: LightSkyBlue;
+  stroke: black;
+  stroke-width: 2;
+}
+
+.right {
+  fill: DodgerBlue;
+  stroke: black;
+  stroke-width: 2;
+}
+
+.left {
+  fill: DeepSkyBlue;
+  stroke: black;
+  stroke-width: 2;
+}
+
+#floor {
+  stroke: black;
+  stroke-width: 2;
+  fill: AliceBlue;
+}
+
+.grid_line {
+  stroke: black;
+  stroke-width: 2;
+  pointer-events: none;
+}
+
+#highlight {
+  fill: gold;
+  opacity: .5;
+  pointer-events: visible;
+  stroke: black;
+  stroke-width: 2;
+}
+
+#help {
+  position: absolute;
+  right: 0%;
+  padding: 2px;
+}
+
+#overlay {
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background-color: rgba(0,0,0,0.5);
+  z-index: 2;
+}
+
+#info {
+  position: fixed;
+  width: 33%;
+  height: 100%;
+  background-color: lightgrey;
+  z-index: 3;
+  top: 0;
+  bottom: 0;
+  left: -35%;
+  padding: 5px;
+  font-family: Verdana, Arial, sans-serif;
+}
+
+.info_enter {
+  animation-name: enter;
+  animation-duration: 250ms;
+  animation-fill-mode: forwards;
+  animation-timing-function: ease-in;
+}
+
+@keyframes enter {
+  from {left: -35%;}
+  to {left: 0;}
+}
+
+.info_exit {
+  animation-name: exit;
+  animation-duration: 250ms;
+  animation-fill-mode: forwards;
+  animation-timing-function: ease-in;
+}
+
+@keyframes exit {
+  from {left: 0;}
+  to {left: -35%;}
+}
